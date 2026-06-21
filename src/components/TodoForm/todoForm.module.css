@@ -1,0 +1,103 @@
+.formContainer {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 35px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.formContainer h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.gridForm {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Estilos homogéneos premium para inputs y selectores */
+.gridForm input, 
+.gridForm select, 
+.gridForm textarea {
+    font-family: inherit;
+    padding: 14px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    background-color: #f8fafc;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Quitar el diseño antiguo del select nativo */
+.gridForm select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.gridForm input:focus, 
+.gridForm select:focus, 
+.gridForm textarea:focus {
+    border-color: #4f46e5;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Alineaciones específicas en la rejilla */
+.selectWrapper {
+    grid-column: span 1;
+}
+
+.textareaWrapper {
+    grid-column: 1 / -1;
+}
+
+.gridForm textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.btnSubmit {
+    grid-column: 1 / -1;
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.btnSubmit:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+.errorMessage {
+    color: #ef4444;
+    font-size: 0.9rem;
+    margin-top: 16px;
+    font-weight: 500;
+    text-align: center;
+}

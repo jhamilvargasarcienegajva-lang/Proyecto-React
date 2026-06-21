@@ -1,0 +1,2757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Central - Sistema de Gestión Completo</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0a1628;
+            --bg-card: #0f1d32;
+            --bg-sidebar: #0c1a2e;
+            --border-color: #1a2d4a;
+            --gold: #f0b429;
+            --gold-hover: #d4a017;
+            --green: #4ade80;
+            --red: #f87171;
+            --text-primary: #ffffff;
+            --text-secondary: #8899aa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+        }
+
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 40px;
+            color: var(--bg-dark);
+        }
+
+        .form-control-custom {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(240, 180, 41, 0.1);
+        }
+
+        .form-control-custom::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 180, 41, 0.3);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(240, 180, 41, 0.1);
+            color: var(--gold);
+            border-left: 3px solid var(--gold);
+        }
+
+        .sidebar-menu i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .content-area {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Cards */
+        .card-custom {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-sidebar) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gold);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+        }
+
+        .stat-change.positive {
+            color: var(--green);
+        }
+
+        .stat-change.negative {
+            color: var(--red);
+        }
+
+        /* Tables */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-custom thead {
+            background: var(--bg-sidebar);
+        }
+
+        .table-custom th {
+            padding: 15px;
+            text-align: left;
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-custom td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.3s;
+        }
+
+        .table-custom tbody tr:hover {
+            background: rgba(240, 180, 41, 0.05);
+        }
+
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .badge-active {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--green);
+        }
+
+        .badge-credit {
+            background: rgba(240, 180, 41, 0.15);
+            color: var(--gold);
+        }
+
+        .badge-mora {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--red);
+        }
+
+        .badge-inactive {
+            background: rgba(136, 153, 170, 0.15);
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn-custom {
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+            margin: 2px;
+        }
+
+        .btn-primary-custom {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--gold-hover);
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline-custom:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-success-custom {
+            background: var(--green);
+            color: var(--bg-dark);
+        }
+
+        .btn-danger-custom {
+            background: var(--red);
+            color: white;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bars */
+        .progress-custom {
+            background: var(--bg-dark);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-custom {
+            background: linear-gradient(90deg, var(--gold) 0%, var(--green) 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        /* Charts Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* Transaction Arrows */
+        .arrow-up {
+            color: var(--green);
+        }
+
+        .arrow-down {
+            color: var(--red);
+        }
+
+        /* Cards Display */
+        .card-visual {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .card-visual:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-visual.blocked {
+            opacity: 0.6;
+        }
+
+        .card-visual.expired {
+            background: linear-gradient(135deg, #434343 0%, #000000 100%);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            display: inline-block;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            transition: 0.4s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--gold);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+            background-color: var(--bg-dark);
+        }
+
+        /* Modal Custom */
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        /* Amount colors */
+        .amount-positive {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .amount-negative {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        .amount-gold {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* Pagination */
+        .pagination-custom {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--gold);
+            color: var(--bg-dark);
+            border-color: var(--gold);
+        }
+
+        /* Search and Filters */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            padding-left: 40px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .content-area {
+                margin-left: 0;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast-custom {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--gold);
+            color: var(--text-primary);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s;
+            min-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        .toast-custom.success {
+            border-left-color: var(--green);
+        }
+
+        .toast-custom.error {
+            border-left-color: var(--red);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Spinner -->
+    <div id="spinner" class="spinner-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginView" class="login-container">
+        <div class="login-box">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h2 style="color: var(--gold); margin-bottom: 10px;">Banco Central</h2>
+                <p style="color: var(--text-secondary);">Sistema de Gestión Bancaria</p>
+            </div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <input type="text" class="form-control-custom" placeholder="Usuario (admin)" id="username" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control-custom" placeholder="Contraseña (admin123)" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-gold">
+                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                </button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="#" style="color: var(--gold); text-decoration: none; font-size: 12px;">¿Olvidaste tu contraseña?</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION -->
+    <div id="mainApp" class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon" style="width: 60px; height: 60px; font-size: 30px; margin: 0 auto 10px;">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h5 style="color: var(--gold); margin: 0;">Banco Central</h5>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a class="active" onclick="showView('dashboard', this)"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+                <li><a onclick="showView('accounts', this)"><i class="fas fa-wallet"></i>Cuentas</a></li>
+                <li><a onclick="showView('loans', this)"><i class="fas fa-hand-holding-usd"></i>Préstamos</a></li>
+                <li><a onclick="showView('transfers', this)"><i class="fas fa-exchange-alt"></i>Transferencias</a></li>
+                <li><a onclick="showView('transactions', this)"><i class="fas fa-history"></i>Transacciones</a></li>
+                <li><a onclick="showView('cards', this)"><i class="fas fa-credit-card"></i>Tarjetas</a></li>
+                <li><a onclick="showView('customers', this)"><i class="fas fa-users"></i>Clientes</a></li>
+                <li><a onclick="showView('investments', this)"><i class="fas fa-chart-pie"></i>Inversiones</a></li>
+                <li><a onclick="showView('reports', this)"><i class="fas fa-file-alt"></i>Reportes</a></li>
+                <li><a onclick="showView('profile', this)"><i class="fas fa-cog"></i>Configuración</a></li>
+                <li><a onclick="logout()"><i class="fas fa-sign-out-alt"></i>Cerrar Sesión</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-title">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="currentDate">Cargando fecha...</p>
+                </div>
+                <div class="user-info">
+                    <span style="color: var(--gold); margin-right: 15px;"><i class="fas fa-user-circle me-2"></i><span id="userNameDisplay">Admin</span></span>
+                    <button class="btn btn-outline-custom btn-sm" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DASHBOARD VIEW -->
+            <div id="dashboardView" class="view active">
+                <!-- Stats Cards -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card" onclick="showView('accounts', document.querySelectorAll('.sidebar-menu a')[1])">
+                            <div class="stat-label">Total Cuentas</div>
+                            <div class="stat-value" style="color: var(--gold);" id="dashTotalAccounts">0</div>
+                            <div class="stat-change positive"><i class="fas fa-arrow-up"></i> <span id="dashActiveAccounts">0</span> activas</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" onclick="showView('loans', document.querySelectorAll('.sidebar-menu a')[2])">
+                            <div class="stat-label">Préstamos Activos</div>
+                            <div class="stat-value" style="color: var(--green);" id="dashTotalLoans">0</div>
+                            <div class="stat-change positive" id="dashLoansAmount">$0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-label">Ingresos del Mes</div>
+                            <div class="stat-value" style="color: var(--green);" id="dashMonthlyIncome">$0</div>
+                            <div class="stat-change positive"><i class="fas fa-arrow-up"></i> <span id="dashIncomePercent">0</span>% vs mes anterior</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" onclick="showView('customers', document.querySelectorAll('.sidebar-menu a')[6])">
+                            <div class="stat-label">Total Clientes</div>
+                            <div class="stat-value" style="color: var(--red);" id="dashTotalCustomers">0</div>
+                            <div class="stat-change negative"><i class="fas fa-exclamation-triangle"></i> <span id="dashCustomersInMora">0</span> en mora</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card-custom">
+                    <h4 style="margin-bottom: 20px; color: var(--gold);"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h4>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button class="btn btn-gold w-100 mb-2" onclick="openModal('accountModal')">
+                                <i class="fas fa-plus me-2"></i>Nueva Cuenta
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-gold w-100 mb-2" onclick="openModal('transferModal')">
+                                <i class="fas fa-exchange-alt me-2"></i>Transferencia
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-gold w-100 mb-2" onclick="openModal('loanModal')">
+                                <i class="fas fa-hand-holding-usd me-2"></i>Nuevo Préstamo
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-gold w-100 mb-2" onclick="openModal('customerModal')">
+                                <i class="fas fa-user-plus me-2"></i>Nuevo Cliente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Accounts Table -->
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 style="margin-bottom: 0; color: var(--gold);"><i class="fas fa-list me-2"></i>Cuentas Recientes</h4>
+                        <button class="btn btn-outline-custom btn-sm" onclick="showView('accounts', document.querySelectorAll('.sidebar-menu a')[1])">
+                            Ver Todas <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>Titular</th>
+                                    <th>Tipo</th>
+                                    <th>Balance</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardAccountsTable">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCOUNTS VIEW -->
+            <div id="accountsView" class="view">
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 style="color: var(--gold); margin: 0;"><i class="fas fa-wallet me-2"></i>Gestión de Cuentas</h4>
+                        <button class="btn btn-primary-custom" onclick="openModal('accountModal')">
+                            <i class="fas fa-plus me-2"></i>Nueva Cuenta
+                        </button>
+                    </div>
+                    
+                    <!-- Search and Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-control-custom" id="accountSearch" placeholder="Buscar cuenta por titular o número..." style="margin: 0;" onkeyup="filterAccounts()">
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <select class="form-control-custom" id="accountFilter" onchange="filterAccounts()" style="margin: 0; display: inline-block; width: auto;">
+                                <option value="all">Todos los estados</option>
+                                <option value="active">Activas</option>
+                                <option value="credit">Crédito</option>
+                                <option value="mora">Mora</option>
+                            </select>
+                            <button class="btn btn-outline-custom" onclick="exportAccountsToCSV()" style="margin-left: 10px;">
+                                <i class="fas fa-download me-2"></i>Exportar CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>N° de Cuenta</th>
+                                    <th>Titular</th>
+                                    <th>Tipo</th>
+                                    <th>Saldo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accountsTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination-custom" id="accountsPagination">
+                        <!-- Dynamic pagination -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOANS VIEW -->
+            <div id="loansView" class="view">
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 style="color: var(--gold); margin: 0;"><i class="fas fa-hand-holding-usd me-2"></i>Préstamos Activos</h4>
+                        <div>
+                            <button class="btn btn-primary-custom me-2" onclick="openModal('loanModal')">
+                                <i class="fas fa-plus me-2"></i>Nuevo Préstamo
+                            </button>
+                            <button class="btn btn-outline-custom" onclick="exportLoansToCSV()">
+                                <i class="fas fa-download me-2"></i>Exportar CSV
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Monto</th>
+                                    <th>Saldo Pendiente</th>
+                                    <th>Pago Mensual</th>
+                                    <th>Progreso</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loansTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRANSFERS VIEW -->
+            <div id="transfersView" class="view">
+                <div class="card-custom" style="max-width: 800px; margin: 0 auto;">
+                    <h4 style="color: var(--gold); margin-bottom: 30px;"><i class="fas fa-exchange-alt me-2"></i>Nueva Transferencia</h4>
+                    
+                    <div class="alert" style="background: rgba(240, 180, 41, 0.1); border: 1px solid var(--gold); border-radius: 8px; padding: 15px; margin-bottom: 25px;">
+                        <strong style="color: var(--gold);">Saldo disponible:</strong>
+                        <span class="amount-gold" style="font-size: 20px;" id="transferAvailableBalance">$0.00</span>
+                    </div>
+                    
+                    <form id="transferForm">
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--text-secondary);">Cuenta de Origen</label>
+                            <select class="form-control-custom" id="transferFromAccount" required onchange="updateTransferBalance()">
+                                <option value="">Seleccione una cuenta</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--text-secondary);">Número de Cuenta Destino</label>
+                            <input type="text" class="form-control-custom" id="transferToAccount" placeholder="Ingrese número de cuenta" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--text-secondary);">Nombre del Destinatario</label>
+                            <input type="text" class="form-control-custom" id="transferRecipientName" placeholder="Nombre completo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--text-secondary);">Monto a Transferir</label>
+                            <input type="number" class="form-control-custom" id="transferAmount" placeholder="0.00" step="0.01" min="0.01" required onchange="validateTransferAmount()">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--text-secondary);">Tipo de Transferencia</label>
+                            <select class="form-control-custom" id="transferType">
+                                <option value="same">Mismo banco</option>
+                                <option value="other">Otro banco</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: var(--text-secondary);">Concepto</label>
+                            <input type="text" class="form-control-custom" id="transferConcept" placeholder="Descripción de la transferencia">
+                        </div>
+                        <div class="mb-4 d-flex align-items-center justify-content-between">
+                            <label class="form-label mb-0" style="color: var(--text-secondary);">Fecha programada</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="transferScheduled">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-gold flex-fill">
+                                <i class="fas fa-check me-2"></i>Confirmar Transferencia
+                            </button>
+                            <button type="button" class="btn btn-outline-custom flex-fill" onclick="resetTransferForm()">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TRANSACTIONS VIEW -->
+            <div id="transactionsView" class="view">
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 style="color: var(--gold); margin: 0;"><i class="fas fa-history me-2"></i>Historial de Transacciones</h4>
+                        <div>
+                            <button class="btn btn-primary-custom me-2" onclick="filterTransactions('all')">Todos</button>
+                            <button class="btn btn-outline-custom me-2" onclick="filterTransactions('deposit')">Depósitos</button>
+                            <button class="btn btn-outline-custom" onclick="filterTransactions('withdraw')">Retiros</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Cuenta</th>
+                                    <th>Tipo</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                    <th>Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARDS VIEW -->
+            <div id="cardsView" class="view">
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 style="color: var(--gold); margin: 0;"><i class="fas fa-credit-card me-2"></i>Gestión de Tarjetas</h4>
+                        <button class="btn btn-primary-custom" onclick="openModal('cardModal')">
+                            <i class="fas fa-plus me-2"></i>Añadir Tarjeta
+                        </button>
+                    </div>
+                    <div class="row" id="cardsContainer">
+                        <!-- Dynamic cards -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOMERS VIEW -->
+            <div id="customersView" class="view">
+                <div class="card-custom">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 style="color: var(--gold); margin: 0;"><i class="fas fa-users me-2"></i>Gestión de Clientes</h4>
+                        <div class="d-flex gap-2">
+                            <input type="text" class="form-control-custom" id="customerSearch" placeholder="Buscar cliente..." style="width: 250px; margin: 0;" onkeyup="filterCustomers()">
+                            <button class="btn btn-primary-custom" onclick="openModal('customerModal')">
+                                <i class="fas fa-plus me-2"></i>Nuevo Cliente
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Estado</th>
+                                    <th>Crédito</th>
+                                    <th>Cuentas</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INVESTMENTS VIEW -->
+            <div id="investmentsView" class="view">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Activos Totales</div>
+                            <div class="stat-value" style="color: var(--gold);" id="invTotalAssets">$0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Préstamos</div>
+                            <div class="stat-value" style="color: var(--green);" id="invTotalLoans">$0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Ingresos Mensuales</div>
+                            <div class="stat-value" style="color: var(--green);" id="invMonthlyIncome">$0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-custom">
+                            <h5 style="color: var(--gold); margin-bottom: 20px;">Distribución de Inversiones</h5>
+                            <canvas id="investmentChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-custom">
+                            <h5 style="color: var(--gold); margin-bottom: 20px;">Tipos de Inversión</h5>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="fas fa-certificate me-2" style="color: var(--gold);"></i>Certificados de Depósito</span>
+                                    <strong id="invCDs">$0</strong>
+                                </div>
+                                <div class="progress-custom">
+                                    <div class="progress-bar-custom" id="progressCDs" style="width: 0%; background: var(--gold);"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="fas fa-file-invoice me-2" style="color: var(--green);"></i>Bonos</span>
+                                    <strong id="invBonds">$0</strong>
+                                </div>
+                                <div class="progress-custom">
+                                    <div class="progress-bar-custom" id="progressBonds" style="width: 0%; background: var(--green);"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span><i class="fas fa-coins me-2" style="color: var(--red);"></i>Fondos Mutuos</span>
+                                    <strong id="invMutualFunds">$0</strong>
+                                </div>
+                                <div class="progress-custom">
+                                    <div class="progress-bar-custom" id="progressMutualFunds" style="width: 0%; background: var(--red);"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-3 mt-4">
+                                <button class="btn btn-gold flex-fill" onclick="buyInvestment()">
+                                    <i class="fas fa-shopping-cart me-2"></i>Comprar
+                                </button>
+                                <button class="btn btn-outline-custom flex-fill" onclick="sellInvestment()">
+                                    <i class="fas fa-dollar-sign me-2"></i>Vender
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORTS VIEW -->
+            <div id="reportsView" class="view">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Activos</div>
+                            <div class="stat-value" style="color: var(--gold);" id="repTotalAssets">$0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Préstamos Otorgados</div>
+                            <div class="stat-value" style="color: var(--green);" id="repTotalLoans">$0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-label">Ingresos Mensuales</div>
+                            <div class="stat-value" style="color: var(--green);" id="repMonthlyIncome">$0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-custom">
+                            <h5 style="color: var(--gold); margin-bottom: 20px;">Ingresos por Cuenta</h5>
+                            <canvas id="incomeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-custom">
+                            <h5 style="color: var(--gold); margin-bottom: 20px;">Distribución de Préstamos</h5>
+                            <canvas id="loansChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card-custom">
+                            <h5 style="color: var(--gold); margin-bottom: 20px;">
+                                Tendencias Mensuales
+                                <button class="btn btn-outline-custom btn-sm float-end" onclick="exportReportToPDF()">
+                                    <i class="fas fa-file-pdf me-2"></i>Exportar PDF
+                                </button>
+                            </h5>
+                            <canvas id="trendsChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE VIEW -->
+            <div id="profileView" class="view">
+                <div class="card-custom" style="max-width: 900px; margin: 0 auto;">
+                    <h4 style="color: var(--gold); margin-bottom: 30px;"><i class="fas fa-cog me-2"></i>Configuración de Perfil</h4>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div style="width: 150px; height: 150px; background: var(--bg-sidebar); border: 3px solid var(--gold); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="font-size: 80px; color: var(--gold);"></i>
+                            </div>
+                            <button class="btn btn-outline-custom btn-sm" onclick="changeProfilePhoto()">
+                                <i class="fas fa-camera me-2"></i>Cambiar Foto
+                            </button>
+                        </div>
+                        <div class="col-md-8">
+                            <form id="profileForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" style="color: var(--text-secondary);">Nombre</label>
+                                        <input type="text" class="form-control-custom" id="profileName" value="Administrador" style="margin: 0;">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" style="color: var(--text-secondary);">Email</label>
+                                        <input type="email" class="form-control-custom" id="profileEmail" value="admin@bancocentral.com" style="margin: 0;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" style="color: var(--text-secondary);">Teléfono</label>
+                                        <input type="tel" class="form-control-custom" id="profilePhone" value="+1 234-567-8900" style="margin: 0;">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" style="color: var(--text-secondary);">ID Número</label>
+                                        <input type="text" class="form-control-custom" id="profileId" value="123456789" style="margin: 0;">
+                                    </div>
+                                </div>
+                                <hr style="border-color: var(--border-color); margin: 30px 0;">
+                                <h5 style="color: var(--gold); margin-bottom: 20px;">Configuración de Seguridad</h5>
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-outline-custom" onclick="changePassword()">
+                                        <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                                    </button>
+                                </div>
+                                <div class="mb-3 d-flex align-items-center justify-content-between">
+                                    <label style="color: var(--text-secondary);">Autenticación de Dos Factores</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="twoFactorAuth">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <hr style="border-color: var(--border-color); margin: 30px 0;">
+                                <h5 style="color: var(--gold); margin-bottom: 20px;">Preferencias</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" style="color: var(--text-secondary);">Idioma</label>
+                                        <select class="form-control-custom" id="profileLanguage" style="margin: 0;">
+                                            <option value="es">Español</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" style="color: var(--text-secondary);">Zona Horaria</label>
+                                        <select class="form-control-custom" id="profileTimezone" style="margin: 0;">
+                                            <option value="GMT-5">GMT-5</option>
+                                            <option value="GMT-6">GMT-6</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 d-flex align-items-center justify-content-between">
+                                    <label style="color: var(--text-secondary);">Tema Oscuro</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="darkTheme" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="d-flex gap-3 mt-4">
+                                    <button type="button" class="btn btn-gold flex-fill" onclick="saveProfile()">
+                                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- Account Modal -->
+    <div class="modal fade" id="accountModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountModalTitle">Nueva Cuenta</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('accountModal')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="accountForm">
+                        <input type="hidden" id="accountId">
+                        <div class="mb-3">
+                            <label class="form-label">Titular</label>
+                            <input type="text" class="form-control-custom" id="accountHolder" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Cuenta</label>
+                            <select class="form-control-custom" id="accountType" required style="margin: 0;">
+                                <option value="Ahorros">Ahorros</option>
+                                <option value="Corriente">Corriente</option>
+                                <option value="Empresarial">Empresarial</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Saldo Inicial</label>
+                            <input type="number" class="form-control-custom" id="accountBalance" step="0.01" min="0" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Estado</label>
+                            <select class="form-control-custom" id="accountStatus" required style="margin: 0;">
+                                <option value="active">Activa</option>
+                                <option value="credit">Crédito</option>
+                                <option value="mora">Mora</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" onclick="closeModal('accountModal')">Cancelar</button>
+                    <button type="button" class="btn btn-gold" onclick="saveAccount()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Modal -->
+    <div class="modal fade" id="loanModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Préstamo</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('loanModal')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loanForm">
+                        <div class="mb-3">
+                            <label class="form-label">Cliente</label>
+                            <select class="form-control-custom" id="loanCustomer" required style="margin: 0;">
+                                <!-- Dynamic options -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Monto del Préstamo</label>
+                            <input type="number" class="form-control-custom" id="loanAmount" step="0.01" min="1000" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tasa de Interés (%)</label>
+                            <input type="number" class="form-control-custom" id="loanInterest" step="0.01" min="0" max="100" value="12" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Plazo (meses)</label>
+                            <input type="number" class="form-control-custom" id="loanTerm" min="6" max="360" value="12" required style="margin: 0;">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" onclick="closeModal('loanModal')">Cancelar</button>
+                    <button type="button" class="btn btn-gold" onclick="saveLoan()">Crear Préstamo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Modal -->
+    <div class="modal fade" id="customerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalTitle">Nuevo Cliente</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('customerModal')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="customerForm">
+                        <input type="hidden" id="customerId">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control-custom" id="customerName" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control-custom" id="customerEmail" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control-custom" id="customerPhone" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Credit Score</label>
+                            <input type="number" class="form-control-custom" id="customerCreditScore" min="300" max="850" value="650" required style="margin: 0;">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" onclick="closeModal('customerModal')">Cancelar</button>
+                    <button type="button" class="btn btn-gold" onclick="saveCustomer()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Modal -->
+    <div class="modal fade" id="cardModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva Tarjeta</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('cardModal')"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="cardForm">
+                        <div class="mb-3">
+                            <label class="form-label">Titular</label>
+                            <input type="text" class="form-control-custom" id="cardHolder" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Número de Tarjeta</label>
+                            <input type="text" class="form-control-custom" id="cardNumber" placeholder="**** **** **** ****" maxlength="19" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha de Expiración</label>
+                            <input type="month" class="form-control-custom" id="cardExpiry" required style="margin: 0;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Límite de Crédito</label>
+                            <input type="number" class="form-control-custom" id="cardLimit" step="0.01" min="1000" required style="margin: 0;">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" onclick="closeModal('cardModal')">Cancelar</button>
+                    <button type="button" class="btn btn-gold" onclick="saveCard()">Guardar Tarjeta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ==================== DATA MANAGEMENT ====================
+        
+        // Initialize data
+        let data = {
+            accounts: [],
+            loans: [],
+            customers: [],
+            cards: [],
+            transactions: [],
+            investments: {
+                cds: 125000000,
+                bonds: 85000000,
+                mutualFunds: 65000000,
+                cashReserves: 50000000
+            },
+            currentUser: null
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('bancoCentralData');
+            if (saved) {
+                data = JSON.parse(saved);
+            } else {
+                // Initialize with sample data
+                initializeSampleData();
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('bancoCentralData', JSON.stringify(data));
+        }
+
+        // Initialize sample data
+        function initializeSampleData() {
+            data.customers = [
+                { id: 'C001', name: 'María González', email: 'maria@email.com', phone: '+1 234-567-8901', creditScore: 750, status: 'active', accountsCount: 3 },
+                { id: 'C002', name: 'Carlos Ramírez', email: 'carlos@email.com', phone: '+1 234-567-8902', creditScore: 680, status: 'active', accountsCount: 2 },
+                { id: 'C003', name: 'Ana Martínez', email: 'ana@email.com', phone: '+1 234-567-8903', creditScore: 720, status: 'active', accountsCount: 2 },
+                { id: 'C004', name: 'Luis Hernández', email: 'luis@email.com', phone: '+1 234-567-8904', creditScore: 800, status: 'active', accountsCount: 4 },
+                { id: 'C005', name: 'Sofía López', email: 'sofia@email.com', phone: '+1 234-567-8905', creditScore: 580, status: 'mora', accountsCount: 1 }
+            ];
+
+            data.accounts = [
+                { id: '001', number: '1234-5678-9012', holder: 'María González', type: 'Ahorros', balance: 12450.00, status: 'active' },
+                { id: '002', number: '1234-5678-9013', holder: 'Carlos Ramírez', type: 'Corriente', balance: 45200.00, status: 'active' },
+                { id: '003', number: '1234-5678-9014', holder: 'Ana Martínez', type: 'Ahorros', balance: 3100.00, status: 'credit' },
+                { id: '004', number: '1234-5678-9015', holder: 'Luis Hernández', type: 'Corriente', balance: 78900.00, status: 'active' },
+                { id: '005', number: '1234-5678-9016', holder: 'Sofía López', type: 'Ahorros', balance: -2300.00, status: 'mora' }
+            ];
+
+            data.loans = [
+                { id: 'L001', customerId: 'C003', customerName: 'Ana Martínez', amount: 25000, remainingBalance: 18500, monthlyPayment: 420, progress: 72, status: 'active' },
+                { id: 'L002', customerId: 'C001', customerName: 'Pedro Sánchez', amount: 50000, remainingBalance: 42100, monthlyPayment: 890, progress: 16, status: 'active' },
+                { id: 'L003', customerId: 'C005', customerName: 'Sofía López', amount: 15000, remainingBalance: 12300, monthlyPayment: 310, progress: 18, status: 'mora' }
+            ];
+
+            data.cards = [
+                { id: 'CARD001', holder: 'Juan Pérez', number: '4532-****-****-4567', expiry: '12/25', limit: 15000, available: 8240, status: 'active' },
+                { id: 'CARD002', holder: 'Juan Pérez', number: '4532-****-****-8901', expiry: '12/25', limit: 10000, available: 5100, status: 'blocked' }
+            ];
+
+            data.transactions = [
+                { id: 'T001', date: '2025-01-15', accountId: '001', accountNumber: '001-María', type: 'deposit', description: 'Depósito en efectivo', amount: 1500, balance: 12450 },
+                { id: 'T002', date: '2025-01-15', accountId: '002', accountNumber: '002-Carlos', type: 'withdraw', description: 'Retiro ATM', amount: -3200, balance: 45200 },
+                { id: 'T003', date: '2025-01-14', accountId: '004', accountNumber: '004-Luis', type: 'deposit', description: 'Transferencia recibida', amount: 12000, balance: 78900 }
+            ];
+
+            saveData();
+        }
+
+        // ==================== AUTHENTICATION ====================
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple authentication (in production, use proper auth)
+            if (username === 'admin' && password === 'admin123') {
+                data.currentUser = { username: username, name: 'Administrador' };
+                document.getElementById('userNameDisplay').textContent = data.currentUser.name;
+                document.getElementById('loginView').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                showToast('Bienvenido al sistema', 'success');
+                initializeApp();
+            } else {
+                showToast('Usuario o contraseña incorrectos', 'error');
+            }
+        });
+
+        function logout() {
+            Swal.fire({
+                title: '¿Cerrar sesión?',
+                text: 'Serás desconectado del sistema',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#f0b429',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    data.currentUser = null;
+                    document.getElementById('mainApp').style.display = 'none';
+                    document.getElementById('loginView').style.display = 'flex';
+                    document.getElementById('loginForm').reset();
+                    showToast('Sesión cerrada correctamente', 'success');
+                }
+            });
+        }
+
+        // ==================== NAVIGATION ====================
+
+        function showView(viewName, element) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Remove active class from all menu items
+            document.querySelectorAll('.sidebar-menu a').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected view
+            const selectedView = document.getElementById(viewName + 'View');
+            if (selectedView) {
+                selectedView.classList.add('active');
+            }
+            
+            // Add active class to clicked menu item
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Update title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'accounts': 'Gestión de Cuentas',
+                'loans': 'Préstamos',
+                'transfers': 'Transferencias',
+                'transactions': 'Transacciones',
+                'cards': 'Tarjetas',
+                'customers': 'Clientes',
+                'investments': 'Inversiones',
+                'reports': 'Reportes',
+                'profile': 'Configuración'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[viewName] || 'Dashboard';
+            
+            // Refresh data for specific views
+            if (viewName === 'accounts') renderAccounts();
+            if (viewName === 'loans') renderLoans();
+            if (viewName === 'transactions') renderTransactions();
+            if (viewName === 'cards') renderCards();
+            if (viewName === 'customers') renderCustomers();
+            if (viewName === 'transfers') prepareTransferView();
+            if (viewName === 'investments' || viewName === 'reports') initCharts();
+            if (viewName === 'dashboard') updateDashboard();
+        }
+
+        // ==================== MODAL FUNCTIONS ====================
+
+        function openModal(modalId) {
+            const modal = new bootstrap.Modal(document.getElementById(modalId));
+            modal.show();
+            
+            // Load customer options for loan modal
+            if (modalId === 'loanModal') {
+                loadCustomerOptions();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+            if (modal) {
+                modal.hide();
+            }
+            // Reset forms
+            if (modalId === 'accountModal') {
+                document.getElementById('accountForm').reset();
+                document.getElementById('accountId').value = '';
+                document.getElementById('accountModalTitle').textContent = 'Nueva Cuenta';
+            }
+            if (modalId === 'loanModal') {
+                document.getElementById('loanForm').reset();
+            }
+            if (modalId === 'customerModal') {
+                document.getElementById('customerForm').reset();
+                document.getElementById('customerId').value = '';
+                document.getElementById('customerModalTitle').textContent = 'Nuevo Cliente';
+            }
+            if (modalId === 'cardModal') {
+                document.getElementById('cardForm').reset();
+            }
+        }
+
+        // ==================== ACCOUNT MANAGEMENT ====================
+
+        function renderAccounts() {
+            const tbody = document.getElementById('accountsTableBody');
+            tbody.innerHTML = '';
+            
+            data.accounts.forEach(account => {
+                const row = createAccountRow(account);
+                tbody.appendChild(row);
+            });
+            
+            updateDashboard();
+        }
+
+        function createAccountRow(account) {
+            const tr = document.createElement('tr');
+            const statusClass = account.status === 'active' ? 'badge-active' : 
+                               account.status === 'credit' ? 'badge-credit' : 'badge-mora';
+            const statusText = account.status === 'active' ? 'Activa' : 
+                              account.status === 'credit' ? 'Crédito' : 'Mora';
+            const amountClass = account.balance >= 0 ? 'amount-positive' : 'amount-negative';
+            
+            tr.innerHTML = `
+                <td>${account.number}</td>
+                <td>${account.holder}</td>
+                <td>${account.type}</td>
+                <td class="${amountClass}">$${formatNumber(account.balance)}</td>
+                <td><span class="badge-status ${statusClass}">${statusText}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-custom" onclick="editAccount('${account.id}')" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-custom" onclick="viewAccount('${account.id}')" title="Ver Detalles">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger-custom" onclick="deleteAccount('${account.id}')" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            return tr;
+        }
+
+        function saveAccount() {
+            const id = document.getElementById('accountId').value;
+            const accountData = {
+                holder: document.getElementById('accountHolder').value,
+                type: document.getElementById('accountType').value,
+                balance: parseFloat(document.getElementById('accountBalance').value),
+                status: document.getElementById('accountStatus').value
+            };
+            
+            if (!accountData.holder || !accountData.type || isNaN(accountData.balance)) {
+                showToast('Por favor complete todos los campos', 'error');
+                return;
+            }
+            
+            if (id) {
+                // Edit existing
+                const index = data.accounts.findIndex(a => a.id === id);
+                if (index !== -1) {
+                    data.accounts[index] = { ...data.accounts[index], ...accountData };
+                    showToast('Cuenta actualizada correctamente', 'success');
+                }
+            } else {
+                // Create new
+                const newAccount = {
+                    id: String(data.accounts.length + 1).padStart(3, '0'),
+                    number: generateAccountNumber(),
+                    ...accountData
+                };
+                data.accounts.push(newAccount);
+                
+                // Add transaction
+                addTransaction(newAccount.id, 'deposit', 'Apertura de cuenta', newAccount.balance);
+                
+                showToast('Cuenta creada correctamente', 'success');
+            }
+            
+            saveData();
+            renderAccounts();
+            closeModal('accountModal');
+        }
+
+        function editAccount(id) {
+            const account = data.accounts.find(a => a.id === id);
+            if (account) {
+                document.getElementById('accountId').value = account.id;
+                document.getElementById('accountHolder').value = account.holder;
+                document.getElementById('accountType').value = account.type;
+                document.getElementById('accountBalance').value = account.balance;
+                document.getElementById('accountStatus').value = account.status;
+                document.getElementById('accountModalTitle').textContent = 'Editar Cuenta';
+                openModal('accountModal');
+            }
+        }
+
+        function viewAccount(id) {
+            const account = data.accounts.find(a => a.id === id);
+            if (account) {
+                Swal.fire({
+                    title: 'Detalles de Cuenta',
+                    html: `
+                        <div style="text-align: left;">
+                            <p><strong>Número:</strong> ${account.number}</p>
+                            <p><strong>Titular:</strong> ${account.holder}</p>
+                            <p><strong>Tipo:</strong> ${account.type}</p>
+                            <p><strong>Saldo:</strong> $${formatNumber(account.balance)}</p>
+                            <p><strong>Estado:</strong> ${account.status}</p>
+                        </div>
+                    `,
+                    confirmButtonColor: '#f0b429'
+                });
+            }
+        }
+
+        function deleteAccount(id) {
+            Swal.fire({
+                title: '¿Eliminar cuenta?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f87171',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    data.accounts = data.accounts.filter(a => a.id !== id);
+                    saveData();
+                    renderAccounts();
+                    showToast('Cuenta eliminada correctamente', 'success');
+                }
+            });
+        }
+
+        function filterAccounts() {
+            const search = document.getElementById('accountSearch').value.toLowerCase();
+            const filter = document.getElementById('accountFilter').value;
+            
+            const filtered = data.accounts.filter(account => {
+                const matchesSearch = account.holder.toLowerCase().includes(search) || 
+                                     account.number.toLowerCase().includes(search);
+                const matchesFilter = filter === 'all' || account.status === filter;
+                return matchesSearch && matchesFilter;
+            });
+            
+            const tbody = document.getElementById('accountsTableBody');
+            tbody.innerHTML = '';
+            filtered.forEach(account => {
+                tbody.appendChild(createAccountRow(account));
+            });
+        }
+
+        function exportAccountsToCSV() {
+            let csv = 'Número,Titular,Tipo,Saldo,Estado\n';
+            data.accounts.forEach(acc => {
+                csv += `${acc.number},${acc.holder},${acc.type},${acc.balance},${acc.status}\n`;
+            });
+            
+            downloadCSV(csv, 'cuentas.csv');
+            showToast('Archivo CSV exportado correctamente', 'success');
+        }
+
+        // ==================== LOAN MANAGEMENT ====================
+
+        function renderLoans() {
+            const tbody = document.getElementById('loansTableBody');
+            tbody.innerHTML = '';
+            
+            data.loans.forEach(loan => {
+                const tr = document.createElement('tr');
+                const statusIcon = loan.status === 'active' ? 
+                    '<i class="fas fa-circle" style="color: var(--green);"></i>' : 
+                    '<i class="fas fa-circle" style="color: var(--red);"></i>';
+                
+                tr.innerHTML = `
+                    <td>${loan.customerName}</td>
+                    <td>$${formatNumber(loan.amount)}</td>
+                    <td class="amount-gold">$${formatNumber(loan.remainingBalance)}</td>
+                    <td>$${formatNumber(loan.monthlyPayment)}/mes</td>
+                    <td>
+                        <div class="progress-custom" style="width: 100px; display: inline-block;">
+                            <div class="progress-bar-custom" style="width: ${loan.progress}%"></div>
+                        </div>
+                        <small style="color: var(--text-secondary);">${loan.progress}%</small>
+                    </td>
+                    <td>${statusIcon}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-custom" onclick="viewLoan('${loan.id}')" title="Ver Detalles">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-success-custom" onclick="recordLoanPayment('${loan.id}')" title="Registrar Pago">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            updateDashboard();
+        }
+
+        function loadCustomerOptions() {
+            const select = document.getElementById('loanCustomer');
+            select.innerHTML = '<option value="">Seleccione un cliente</option>';
+            data.customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.name} (Score: ${customer.creditScore})`;
+                select.appendChild(option);
+            });
+        }
+
+        function saveLoan() {
+            const customerId = document.getElementById('loanCustomer').value;
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const interest = parseFloat(document.getElementById('loanInterest').value);
+            const term = parseInt(document.getElementById('loanTerm').value);
+            
+            if (!customerId || isNaN(amount) || isNaN(interest) || isNaN(term)) {
+                showToast('Por favor complete todos los campos', 'error');
+                return;
+            }
+            
+            const customer = data.customers.find(c => c.id === customerId);
+            const monthlyPayment = calculateMonthlyPayment(amount, interest, term);
+            
+            const newLoan = {
+                id: 'L' + String(data.loans.length + 1).padStart(3, '0'),
+                customerId: customerId,
+                customerName: customer.name,
+                amount: amount,
+                remainingBalance: amount,
+                monthlyPayment: monthlyPayment,
+                progress: 0,
+                status: 'active'
+            };
+            
+            data.loans.push(newLoan);
+            saveData();
+            renderLoans();
+            closeModal('loanModal');
+            showToast('Préstamo creado correctamente', 'success');
+        }
+
+        function calculateMonthlyPayment(principal, annualRate, months) {
+            const monthlyRate = annualRate / 100 / 12;
+            if (monthlyRate === 0) return principal / months;
+            return principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                   (Math.pow(1 + monthlyRate, months) - 1);
+        }
+
+        function recordLoanPayment(loanId) {
+            const loan = data.loans.find(l => l.id === loanId);
+            if (!loan) return;
+            
+            Swal.fire({
+                title: 'Registrar Pago',
+                input: 'number',
+                inputLabel: 'Monto del pago',
+                inputValue: loan.monthlyPayment,
+                inputAttributes: {
+                    min: '0',
+                    step: '0.01'
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#f0b429',
+                confirmButtonText: 'Registrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    const payment = parseFloat(result.value);
+                    if (payment > 0 && payment <= loan.remainingBalance) {
+                        loan.remainingBalance -= payment;
+                        loan.progress = Math.round(((loan.amount - loan.remainingBalance) / loan.amount) * 100);
+                        
+                        if (loan.remainingBalance <= 0) {
+                            loan.status = 'paid';
+                            showToast('¡Préstamo pagado completamente!', 'success');
+                        } else {
+                            showToast('Pago registrado correctamente', 'success');
+                        }
+                        
+                        saveData();
+                        renderLoans();
+                    } else {
+                        showToast('Monto inválido', 'error');
+                    }
+                }
+            });
+        }
+
+        function viewLoan(id) {
+            const loan = data.loans.find(l => l.id === id);
+            if (loan) {
+                Swal.fire({
+                    title: 'Detalles del Préstamo',
+                    html: `
+                        <div style="text-align: left;">
+                            <p><strong>Cliente:</strong> ${loan.customerName}</p>
+                            <p><strong>Monto Original:</strong> $${formatNumber(loan.amount)}</p>
+                            <p><strong>Saldo Pendiente:</strong> $${formatNumber(loan.remainingBalance)}</p>
+                            <p><strong>Pago Mensual:</strong> $${formatNumber(loan.monthlyPayment)}</p>
+                            <p><strong>Progreso:</strong> ${loan.progress}%</p>
+                        </div>
+                    `,
+                    confirmButtonColor: '#f0b429'
+                });
+            }
+        }
+
+        function exportLoansToCSV() {
+            let csv = 'Cliente,Monto,Saldo Pendiente,Pago Mensual,Progreso,Estado\n';
+            data.loans.forEach(loan => {
+                csv += `${loan.customerName},${loan.amount},${loan.remainingBalance},${loan.monthlyPayment},${loan.progress}%,${loan.status}\n`;
+            });
+            
+            downloadCSV(csv, 'prestamos.csv');
+            showToast('Archivo CSV exportado correctamente', 'success');
+        }
+
+        // ==================== TRANSFER MANAGEMENT ====================
+
+        function prepareTransferView() {
+            const select = document.getElementById('transferFromAccount');
+            select.innerHTML = '<option value="">Seleccione una cuenta</option>';
+            
+            data.accounts.filter(a => a.balance > 0).forEach(account => {
+                const option = document.createElement('option');
+                option.value = account.id;
+                option.textContent = `${account.number} - ${account.holder} ($${formatNumber(account.balance)})`;
+                select.appendChild(option);
+            });
+            
+            updateTransferBalance();
+        }
+
+        function updateTransferBalance() {
+            const accountId = document.getElementById('transferFromAccount').value;
+            const account = data.accounts.find(a => a.id === accountId);
+            const balanceDisplay = document.getElementById('transferAvailableBalance');
+            
+            if (account) {
+                balanceDisplay.textContent = '$' + formatNumber(account.balance);
+            } else {
+                balanceDisplay.textContent = '$0.00';
+            }
+        }
+
+        function validateTransferAmount() {
+            const accountId = document.getElementById('transferFromAccount').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const account = data.accounts.find(a => a.id === accountId);
+            
+            if (account && amount > account.balance) {
+                showToast('Saldo insuficiente', 'error');
+                document.getElementById('transferAmount').value = '';
+            }
+        }
+
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fromAccountId = document.getElementById('transferFromAccount').value;
+            const toAccountNumber = document.getElementById('transferToAccount').value;
+            const recipientName = document.getElementById('transferRecipientName').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const concept = document.getElementById('transferConcept').value;
+            
+            if (!fromAccountId || !toAccountNumber || !recipientName || isNaN(amount) || amount <= 0) {
+                showToast('Por favor complete todos los campos', 'error');
+                return;
+            }
+            
+            const fromAccount = data.accounts.find(a => a.id === fromAccountId);
+            if (amount > fromAccount.balance) {
+                showToast('Saldo insuficiente', 'error');
+                return;
+            }
+            
+            // Deduct from source account
+            fromAccount.balance -= amount;
+            
+            // Try to find destination account and add
+            const toAccount = data.accounts.find(a => a.number === toAccountNumber);
+            if (toAccount) {
+                toAccount.balance += amount;
+                addTransaction(toAccount.id, 'deposit', `Transferencia de ${fromAccount.holder}`, amount);
+            }
+            
+            // Add transaction for source account
+            addTransaction(fromAccount.id, 'withdraw', `Transferencia a ${recipientName}`, -amount);
+            
+            saveData();
+            
+            Swal.fire({
+                title: '¡Transferencia Exitosa!',
+                text: `Se han transferido $${formatNumber(amount)} a ${recipientName}`,
+                icon: 'success',
+                confirmButtonColor: '#f0b429'
+            });
+            
+            resetTransferForm();
+            renderAccounts();
+        });
+
+        function resetTransferForm() {
+            document.getElementById('transferForm').reset();
+            updateTransferBalance();
+        }
+
+        // ==================== TRANSACTION MANAGEMENT ====================
+
+        function addTransaction(accountId, type, description, amount) {
+            const account = data.accounts.find(a => a.id === accountId);
+            const transaction = {
+                id: 'T' + String(data.transactions.length + 1).padStart(3, '0'),
+                date: new Date().toISOString().split('T')[0],
+                accountId: accountId,
+                accountNumber: `${account.id}-${account.holder.substring(0, 3)}`,
+                type: type,
+                description: description,
+                amount: amount,
+                balance: account.balance
+            };
+            
+            data.transactions.unshift(transaction);
+            saveData();
+        }
+
+        function renderTransactions() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+            
+            data.transactions.forEach(trans => {
+                const tr = document.createElement('tr');
+                const typeIcon = trans.type === 'deposit' ? 
+                    '<i class="fas fa-arrow-down arrow-up me-2"></i>' : 
+                    '<i class="fas fa-arrow-up arrow-down me-2"></i>';
+                const typeText = trans.type === 'deposit' ? 'Depósito' : 'Retiro';
+                const amountClass = trans.amount >= 0 ? 'amount-positive' : 'amount-negative';
+                
+                tr.innerHTML = `
+                    <td>${trans.date}</td>
+                    <td>${trans.accountNumber}</td>
+                    <td>${typeIcon}${typeText}</td>
+                    <td>${trans.description}</td>
+                    <td class="${amountClass}">${trans.amount >= 0 ? '+' : ''}$${formatNumber(Math.abs(trans.amount))}</td>
+                    <td>$${formatNumber(trans.balance)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTransactions(type) {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+            
+            const filtered = type === 'all' ? data.transactions : 
+                           data.transactions.filter(t => t.type === type);
+            
+            filtered.forEach(trans => {
+                const tr = document.createElement('tr');
+                const typeIcon = trans.type === 'deposit' ? 
+                    '<i class="fas fa-arrow-down arrow-up me-2"></i>' : 
+                    '<i class="fas fa-arrow-up arrow-down me-2"></i>';
+                const typeText = trans.type === 'deposit' ? 'Depósito' : 'Retiro';
+                const amountClass = trans.amount >= 0 ? 'amount-positive' : 'amount-negative';
+                
+                tr.innerHTML = `
+                    <td>${trans.date}</td>
+                    <td>${trans.accountNumber}</td>
+                    <td>${typeIcon}${typeText}</td>
+                    <td>${trans.description}</td>
+                    <td class="${amountClass}">${trans.amount >= 0 ? '+' : ''}$${formatNumber(Math.abs(trans.amount))}</td>
+                    <td>$${formatNumber(trans.balance)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ==================== CARD MANAGEMENT ====================
+
+        function renderCards() {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+            
+            data.cards.forEach(card => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'col-md-4';
+                
+                const statusClass = card.status === 'active' ? '' : 'blocked';
+                const statusBadge = card.status === 'active' ? 
+                    '<small style="color: var(--green);"><i class="fas fa-check-circle me-1"></i>Activa</small>' : 
+                    '<small style="color: var(--red);"><i class="fas fa-ban me-1"></i>Bloqueada</small>';
+                
+                cardDiv.innerHTML = `
+                    <div class="card-visual ${statusClass}">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h5 style="margin: 0;">${card.holder}</h5>
+                                ${statusBadge}
+                            </div>
+                            <i class="fab fa-cc-visa" style="font-size: 30px;"></i>
+                        </div>
+                        <div class="mb-3">
+                            <span style="font-size: 18px; letter-spacing: 2px;">${card.number}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small style="color: var(--text-secondary);">Límite:</small>
+                                <div style="font-weight: bold;">$${formatNumber(card.limit)}</div>
+                            </div>
+                            <div>
+                                <small style="color: var(--text-secondary);">Disponible:</small>
+                                <div style="font-weight: bold; color: var(--green);">$${formatNumber(card.available)}</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
+                            <button class="btn btn-sm ${card.status === 'active' ? 'btn-danger-custom' : 'btn-success-custom'}" onclick="toggleCardStatus('${card.id}')">
+                                <i class="fas ${card.status === 'active' ? 'fa-lock' : 'fa-unlock'} me-1"></i>
+                                ${card.status === 'active' ? 'Bloquear' : 'Desbloquear'}
+                            </button>
+                            <button class="btn btn-sm btn-outline-custom" onclick="editCard('${card.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-custom" onclick="deleteCard('${card.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function saveCard() {
+            const cardData = {
+                holder: document.getElementById('cardHolder').value,
+                number: formatCardNumber(document.getElementById('cardNumber').value),
+                expiry: document.getElementById('cardExpiry').value,
+                limit: parseFloat(document.getElementById('cardLimit').value),
+                available: parseFloat(document.getElementById('cardLimit').value),
+                status: 'active'
+            };
+            
+            if (!cardData.holder || !cardData.number || !cardData.expiry || isNaN(cardData.limit)) {
+                showToast('Por favor complete todos los campos', 'error');
+                return;
+            }
+            
+            cardData.id = 'CARD' + String(data.cards.length + 1).padStart(3, '0');
+            data.cards.push(cardData);
+            saveData();
+            renderCards();
+            closeModal('cardModal');
+            showToast('Tarjeta creada correctamente', 'success');
+        }
+
+        function toggleCardStatus(cardId) {
+            const card = data.cards.find(c => c.id === cardId);
+            if (card) {
+                card.status = card.status === 'active' ? 'blocked' : 'active';
+                saveData();
+                renderCards();
+                showToast(`Tarjeta ${card.status === 'active' ? 'desbloqueada' : 'bloqueada'} correctamente`, 'success');
+            }
+        }
+
+        function editCard(cardId) {
+            const card = data.cards.find(c => c.id === cardId);
+            if (card) {
+                // Implement edit functionality
+                showToast('Función de edición en desarrollo', 'success');
+            }
+        }
+
+        function deleteCard(cardId) {
+            Swal.fire({
+                title: '¿Eliminar tarjeta?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f87171',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    data.cards = data.cards.filter(c => c.id !== cardId);
+                    saveData();
+                    renderCards();
+                    showToast('Tarjeta eliminada correctamente', 'success');
+                }
+            });
+        }
+
+        // ==================== CUSTOMER MANAGEMENT ====================
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customersTableBody');
+            tbody.innerHTML = '';
+            
+            data.customers.forEach(customer => {
+                const tr = document.createElement('tr');
+                const statusClass = customer.status === 'active' ? 'badge-active' : 'badge-mora';
+                const statusText = customer.status === 'active' ? 'Activo' : 'Mora';
+                const stars = generateStars(customer.creditScore);
+                
+                tr.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td><span class="badge-status ${statusClass}">${statusText}</span></td>
+                    <td>${stars}</td>
+                    <td>${customer.creditScore}</td>
+                    <td>${customer.accountsCount}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-custom" onclick="editCustomer('${customer.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger-custom" onclick="deleteCustomer('${customer.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function generateStars(score) {
+            const fullStars = Math.floor((score - 300) / 110);
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < fullStars) {
+                    stars += '<i class="fas fa-star" style="color: var(--gold);"></i>';
+                } else {
+                    stars += '<i class="far fa-star" style="color: var(--gold);"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function saveCustomer() {
+            const id = document.getElementById('customerId').value;
+            const customerData = {
+                name: document.getElementById('customerName').value,
+                email: document.getElementById('customerEmail').value,
+                phone: document.getElementById('customerPhone').value,
+                creditScore: parseInt(document.getElementById('customerCreditScore').value),
+                status: 'active',
+                accountsCount: 0
+            };
+            
+            if (!customerData.name || !customerData.email || !customerData.phone || isNaN(customerData.creditScore)) {
+                showToast('Por favor complete todos los campos', 'error');
+                return;
+            }
+            
+            if (id) {
+                // Edit existing
+                const index = data.customers.findIndex(c => c.id === id);
+                if (index !== -1) {
+                    data.customers[index] = { ...data.customers[index], ...customerData };
+                    showToast('Cliente actualizado correctamente', 'success');
+                }
+            } else {
+                // Create new
+                customerData.id = 'C' + String(data.customers.length + 1).padStart(3, '0');
+                data.customers.push(customerData);
+                showToast('Cliente creado correctamente', 'success');
+            }
+            
+            saveData();
+            renderCustomers();
+            closeModal('customerModal');
+        }
+
+        function editCustomer(id) {
+            const customer = data.customers.find(c => c.id === id);
+            if (customer) {
+                document.getElementById('customerId').value = customer.id;
+                document.getElementById('customerName').value = customer.name;
+                document.getElementById('customerEmail').value = customer.email;
+                document.getElementById('customerPhone').value = customer.phone;
+                document.getElementById('customerCreditScore').value = customer.creditScore;
+                document.getElementById('customerModalTitle').textContent = 'Editar Cliente';
+                openModal('customerModal');
+            }
+        }
+
+        function deleteCustomer(id) {
+            Swal.fire({
+                title: '¿Eliminar cliente?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f87171',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    data.customers = data.customers.filter(c => c.id !== id);
+                    saveData();
+                    renderCustomers();
+                    showToast('Cliente eliminado correctamente', 'success');
+                }
+            });
+        }
+
+        function filterCustomers() {
+            const search = document.getElementById('customerSearch').value.toLowerCase();
+            const filtered = data.customers.filter(c => 
+                c.name.toLowerCase().includes(search) || 
+                c.email.toLowerCase().includes(search)
+            );
+            
+            const tbody = document.getElementById('customersTableBody');
+            tbody.innerHTML = '';
+            filtered.forEach(customer => {
+                const tr = document.createElement('tr');
+                const statusClass = customer.status === 'active' ? 'badge-active' : 'badge-mora';
+                const statusText = customer.status === 'active' ? 'Activo' : 'Mora';
+                const stars = generateStars(customer.creditScore);
+                
+                tr.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td><span class="badge-status ${statusClass}">${statusText}</span></td>
+                    <td>${stars}</td>
+                    <td>${customer.creditScore}</td>
+                    <td>${customer.accountsCount}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-custom" onclick="editCustomer('${customer.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger-custom" onclick="deleteCustomer('${customer.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ==================== INVESTMENTS & CHARTS ====================
+
+        let charts = {};
+
+        function initCharts() {
+            // Destroy existing charts
+            Object.values(charts).forEach(chart => chart.destroy());
+            
+            // Investment Chart
+            const investmentCtx = document.getElementById('investmentChart');
+            if (investmentCtx) {
+                charts.investment = new Chart(investmentCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['CDs', 'Bonos', 'Fondos Mutuos', 'Reservas'],
+                        datasets: [{
+                            data: [
+                                data.investments.cds,
+                                data.investments.bonds,
+                                data.investments.mutualFunds,
+                                data.investments.cashReserves
+                            ],
+                            backgroundColor: ['#f0b429', '#4ade80', '#f87171', '#60a5fa'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: '#8899aa',
+                                    padding: 15
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Income Chart
+            const incomeCtx = document.getElementById('incomeChart');
+            if (incomeCtx) {
+                charts.income = new Chart(incomeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cuentas Corrientes', 'Cuentas de Ahorro', 'Cuentas Empresariales'],
+                        datasets: [{
+                            label: 'Ingresos',
+                            data: [125000, 195000, 85000],
+                            backgroundColor: ['#f0b429', '#4ade80', '#f0b429'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#8899aa' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#8899aa' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Loans Chart
+            const loansCtx = document.getElementById('loansChart');
+            if (loansCtx) {
+                charts.loans = new Chart(loansCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Hipotecarios (42%)', 'Consumo (28%)', 'Empresariales (22%)', 'Otros (8%)'],
+                        datasets: [{
+                            data: [42, 28, 22, 8],
+                            backgroundColor: ['#f0b429', '#f5c542', '#4ade80', '#6ee7b7'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: { color: '#8899aa', padding: 15 }
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+            }
+
+            // Trends Chart
+            const trendsCtx = document.getElementById('trendsChart');
+            if (trendsCtx) {
+                charts.trends = new Chart(trendsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                        datasets: [
+                            {
+                                label: 'Ingresos 2024',
+                                data: [12000, 12500, 13200, 12800, 13500, 14200, 13800, 14500, 15200, 14800, 15500, 16200],
+                                borderColor: '#4ade80',
+                                backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'Ingresos 2023',
+                                data: [10000, 10500, 11000, 10800, 11200, 11500, 11800, 12000, 12200, 12500, 12800, 13000],
+                                borderColor: '#f0b429',
+                                backgroundColor: 'rgba(240, 180, 41, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { labels: { color: '#8899aa' } }
+                        },
+                        scales: {
+                            y: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#8899aa' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#8899aa' }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            updateInvestmentsDisplay();
+        }
+
+        function updateInvestmentsDisplay() {
+            const totalAssets = data.investments.cds + data.investments.bonds + 
+                               data.investments.mutualFunds + data.investments.cashReserves;
+            const totalLoans = data.loans.reduce((sum, loan) => sum + loan.amount, 0);
+            const monthlyIncome = 14780000; // This should be calculated from transactions
+            
+            document.getElementById('invTotalAssets').textContent = '$' + formatNumber(totalAssets) + 'M';
+            document.getElementById('invTotalLoans').textContent = '$' + formatNumber(totalLoans / 1000000) + 'M';
+            document.getElementById('invMonthlyIncome').textContent = '$' + formatNumber(monthlyIncome / 1000000) + 'M';
+            
+            document.getElementById('invCDs').textContent = '$' + formatNumber(data.investments.cds / 1000000) + 'M';
+            document.getElementById('invBonds').textContent = '$' + formatNumber(data.investments.bonds / 1000000) + 'M';
+            document.getElementById('invMutualFunds').textContent = '$' + formatNumber(data.investments.mutualFunds / 1000000) + 'M';
+            
+            const total = data.investments.cds + data.investments.bonds + data.investments.mutualFunds;
+            document.getElementById('progressCDs').style.width = (data.investments.cds / total * 100) + '%';
+            document.getElementById('progressBonds').style.width = (data.investments.bonds / total * 100) + '%';
+            document.getElementById('progressMutualFunds').style.width = (data.investments.mutualFunds / total * 100) + '%';
+            
+            // Update reports view
+            document.getElementById('repTotalAssets').textContent = '$' + formatNumber(totalAssets) + 'M';
+            document.getElementById('repTotalLoans').textContent = '$' + formatNumber(totalLoans / 1000000) + 'M';
+            document.getElementById('repMonthlyIncome').textContent = '$' + formatNumber(monthlyIncome / 1000000) + 'M';
+        }
+
+        function buyInvestment() {
+            Swal.fire({
+                title: 'Comprar Inversión',
+                input: 'select',
+                inputOptions: {
+                    'cds': 'Certificados de Depósito',
+                    'bonds': 'Bonos',
+                    'mutualFunds': 'Fondos Mutuos'
+                },
+                inputLabel: 'Tipo de inversión',
+                showCancelButton: true,
+                confirmButtonColor: '#f0b429',
+                confirmButtonText: 'Comprar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    showToast('Orden de compra enviada', 'success');
+                }
+            });
+        }
+
+        function sellInvestment() {
+            Swal.fire({
+                title: 'Vender Inversión',
+                input: 'select',
+                inputOptions: {
+                    'cds': 'Certificados de Depósito',
+                    'bonds': 'Bonos',
+                    'mutualFunds': 'Fondos Mutuos'
+                },
+                inputLabel: 'Tipo de inversión',
+                showCancelButton: true,
+                confirmButtonColor: '#f0b429',
+                confirmButtonText: 'Vender',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    showToast('Orden de venta enviada', 'success');
+                }
+            });
+        }
+
+        // ==================== DASHBOARD ====================
+
+        function updateDashboard() {
+            const totalAccounts = data.accounts.length;
+            const activeAccounts = data.accounts.filter(a => a.status === 'active').length;
+            const totalLoans = data.loans.length;
+            const loansAmount = data.loans.reduce((sum, loan) => sum + loan.amount, 0);
+            const totalCustomers = data.customers.length;
+            const customersInMora = data.customers.filter(c => c.status === 'mora').length;
+            
+            document.getElementById('dashTotalAccounts').textContent = totalAccounts;
+            document.getElementById('dashActiveAccounts').textContent = activeAccounts;
+            document.getElementById('dashTotalLoans').textContent = totalLoans;
+            document.getElementById('dashLoansAmount').textContent = '$' + formatNumber(loansAmount / 1000000) + 'M';
+            document.getElementById('dashTotalCustomers').textContent = totalCustomers;
+            document.getElementById('dashCustomersInMora').textContent = customersInMora;
+            document.getElementById('dashMonthlyIncome').textContent = '$2.8M';
+            document.getElementById('dashIncomePercent').textContent = '8.3';
+            
+            // Update recent accounts table
+            const tbody = document.getElementById('dashboardAccountsTable');
+            tbody.innerHTML = '';
+            data.accounts.slice(0, 5).forEach(account => {
+                tbody.appendChild(createAccountRow(account));
+            });
+        }
+
+        // ==================== PROFILE ====================
+
+        function saveProfile() {
+            const profileData = {
+                name: document.getElementById('profileName').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value,
+                id: document.getElementById('profileId').value,
+                language: document.getElementById('profileLanguage').value,
+                timezone: document.getElementById('profileTimezone').value,
+                twoFactorAuth: document.getElementById('twoFactorAuth').checked
+            };
+            
+            localStorage.setItem('bancoCentralProfile', JSON.stringify(profileData));
+            document.getElementById('userNameDisplay').textContent = profileData.name;
+            showToast('Perfil guardado correctamente', 'success');
+        }
+
+        function changePassword() {
+            Swal.fire({
+                title: 'Cambiar Contraseña',
+                input: 'password',
+                inputLabel: 'Nueva contraseña',
+                inputPlaceholder: 'Ingrese nueva contraseña',
+                inputAttributes: {
+                    minlength: 6
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#f0b429',
+                confirmButtonText: 'Cambiar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    showToast('Contraseña cambiada correctamente', 'success');
+                }
+            });
+        }
+
+        function changeProfilePhoto() {
+            showToast('Función de cambio de foto en desarrollo', 'success');
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+
+        function formatNumber(num) {
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function generateAccountNumber() {
+            return Math.random().toString().substr(2, 4) + '-' + 
+                   Math.random().toString().substr(2, 4) + '-' + 
+                   Math.random().toString().substr(2, 4);
+        }
+
+        function formatCardNumber(number) {
+            const cleaned = number.replace(/\D/g, '');
+            const matches = cleaned.match(/(\d{0,4})/g);
+            return matches ? matches.join(' ').trim() : cleaned;
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', filename);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function exportReportToPDF() {
+            showToast('Generando PDF...', 'success');
+            setTimeout(() => {
+                showToast('Reporte PDF descargado', 'success');
+            }, 1500);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-custom ${type}`;
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function updateDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const dateString = now.toLocaleDateString('es-ES', options);
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                dateElement.textContent = dateString;
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+
+        function initializeApp() {
+            loadData();
+            updateDate();
+            setInterval(updateDate, 60000);
+            updateDashboard();
+            
+            // Load profile if exists
+            const savedProfile = localStorage.getItem('bancoCentralProfile');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                document.getElementById('profileName').value = profile.name || 'Administrador';
+                document.getElementById('profileEmail').value = profile.email || '';
+                document.getElementById('profilePhone').value = profile.phone || '';
+                document.getElementById('profileId').value = profile.id || '';
+                document.getElementById('profileLanguage').value = profile.language || 'es';
+                document.getElementById('profileTimezone').value = profile.timezone || 'GMT-5';
+                document.getElementById('twoFactorAuth').checked = profile.twoFactorAuth || false;
+                document.getElementById('userNameDisplay').textContent = profile.name || 'Admin';
+            }
+        }
+
+        // Format card number input
+        document.getElementById('cardNumber')?.addEventListener('input', function(e) {
+            this.value = formatCardNumber(this.value);
+        });
+
+        // Auto-hide spinner after load
+        window.addEventListener('load', () => {
+            document.getElementById('spinner').classList.remove('show');
+        });
+    </script>
+</body>
+</html>

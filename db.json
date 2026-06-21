@@ -1,0 +1,22 @@
+{
+  "productos": [
+    {
+      "id": "1",
+      "nombre": "Auriculares Wireless Pro",
+      "precio": 129.99,
+      "categoria": "Audio",
+      "estado": "Disponible",
+      "descripcion": "Cancelación de ruido activa y 40 horas de batería premium.",
+      "imagen": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80"
+    },
+    {
+      "id": "2",
+      "nombre": "Smartwatch Minimalist",
+      "precio": 199.50,
+      "categoria": "Dispositivos",
+      "estado": "Agotado",
+      "descripcion": "Pantalla AMOLED, monitoreo de salud avanzado y diseño ultrafino.",
+      "imagen": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80"
+    }
+  ]
+}
